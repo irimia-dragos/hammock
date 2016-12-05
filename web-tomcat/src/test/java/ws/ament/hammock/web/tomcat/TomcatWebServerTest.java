@@ -51,6 +51,7 @@ import static org.junit.Assert.fail;
 public class TomcatWebServerTest {
     @Test
     public void shouldBootWebServer() throws Exception {
+        SSLBypass.disableSSLChecks();
         try(WeldContainer weldContainer = new Weld().disableDiscovery()
                 .extensions(new ConfigurationExtension())
                 .beanClasses(TomcatWebServer.class, DefaultServlet.class, MessageProvider.class,
@@ -65,7 +66,7 @@ public class TomcatWebServerTest {
                 assertThat(data).isEqualTo(MessageProvider.DATA);
             }
 
-            try(InputStream stream = new URL("http://localhost:8080/rest").openStream()) {
+            try(InputStream stream = new URL("https://localhost:8443/rest").openStream()) {
                 String data = IOUtils.toString(stream).trim();
                 assertThat(data).isEqualTo("Hello, world!");
             }
